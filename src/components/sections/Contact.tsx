@@ -40,8 +40,8 @@ const contactCards = [
   {
     icon: Globe,
     label: "Startup Website",
-    value: "ragasaerospace.vercel.app",
-    href: "https://ragasaerospace.vercel.app/",
+    value: "ragas-aerospace.vercel.app",
+    href: "https://ragas-aerospace.vercel.app/",
     color: "gold",
   },
 ];
