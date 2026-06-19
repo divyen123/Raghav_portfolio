@@ -19,8 +19,8 @@ const contactCards = [
   {
     icon: Mail,
     label: "Email",
-    value: "raghavsaravanan22@mail.com",
-    href: "mailto:raghavsaravanan22@mail.com",
+    value: "raghavsaravanan22@gmail.com",
+    href: "mailto:raghavsaravanan22@gmail.com",
     color: "neon",
   },
   {
