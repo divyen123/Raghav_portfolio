@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, useInView } from "framer-motion";
 import { GraduationCap, Award, X, Eye, FileBadge } from "lucide-react";
 
@@ -60,6 +61,11 @@ export default function Education() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const [selectedCert, setSelectedCert] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <section id="education" ref={ref} className="relative py-36 px-6 md:px-16 overflow-hidden">
@@ -155,22 +161,27 @@ export default function Education() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.5, delay: 0.1 + idx * 0.05 }}
-                  className="group relative holo-glass rounded-xl p-4 border border-white/10 hover:border-aerospace-cyan/50 hover:bg-white/[0.02] transition-all duration-300 flex flex-col justify-between h-[150px]"
+                  style={{
+                    backgroundImage: `linear-gradient(to top, rgba(8, 8, 8, 0.95) 0%, rgba(8, 8, 8, 0.85) 60%, rgba(8, 8, 8, 0.75) 100%), url("/certifications/${encodeURIComponent(cert.img)}")`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                  className="group relative holo-glass rounded-xl p-4 border border-white/10 hover:border-aerospace-cyan/50 hover:bg-white/[0.01] transition-all duration-300 flex flex-col justify-between h-[160px]"
                 >
-                  <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start justify-between gap-3 relative z-10">
                     <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 group-hover:text-aerospace-cyan transition-colors">
                       <FileBadge size={16} />
                     </div>
                     <span className="text-[9px] font-mono text-gray-500">ID: {String(cert.id).padStart(2, "0")}</span>
                   </div>
 
-                  <div className="mt-2">
+                  <div className="mt-2 relative z-10">
                     <h4 className="text-xs font-bold text-white line-clamp-2 group-hover:text-aerospace-cyan transition-colors duration-300">
                       {cert.title}
                     </h4>
                   </div>
 
-                  <div className="mt-3 flex justify-end">
+                  <div className="mt-3 flex justify-end relative z-10">
                     <button
                       onClick={() => setSelectedCert(cert.img)}
                       className="text-[10px] font-mono font-bold text-gray-400 hover:text-white flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 border border-white/15 transition-all duration-300"
@@ -186,27 +197,28 @@ export default function Education() {
         </div>
       </div>
 
-      {/* Floating full-screen viewer (Modal) */}
-      {selectedCert && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 animate-fade-in">
+      {/* Floating full-screen viewer (Modal using React Portal to bypass CSS transforms) */}
+      {selectedCert && mounted && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 animate-fade-in">
           <div className="relative max-w-4xl w-full max-h-[85vh] flex flex-col items-center justify-center">
             {/* Wrong (Close) Icon button */}
             <button
               onClick={() => setSelectedCert(null)}
-              className="absolute -top-14 right-2 md:-right-12 w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:text-red-500 hover:bg-white/20 transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.1)] z-10"
+              className="absolute -top-14 right-2 md:-right-12 w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:text-red-500 hover:bg-white/20 transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.1)] z-[10000]"
               aria-label="Close certificate"
             >
               <X size={20} />
             </button>
             <div className="relative w-full h-[75vh] flex items-center justify-center rounded-lg overflow-hidden border border-white/10 shadow-2xl bg-black/50">
               <img
-                src={`/certifications/${selectedCert}`}
+                src={`/certifications/${encodeURIComponent(selectedCert)}`}
                 alt="Certificate Viewer"
                 className="max-w-full max-h-full object-contain"
               />
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </section>
   );
