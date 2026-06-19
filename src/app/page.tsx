@@ -4,6 +4,7 @@ import About from "@/components/sections/About";
 import Projects from "@/components/sections/Projects";
 import Achievements from "@/components/sections/Achievements";
 import StartupJourney from "@/components/sections/StartupJourney";
+import Education from "@/components/sections/Education";
 import Contact from "@/components/sections/Contact";
 
 export default function Home() {
@@ -43,6 +44,13 @@ export default function Home() {
         {/* 05 — Startup Journey */}
         <CinematicSection>
           <StartupJourney />
+        </CinematicSection>
+
+        <div className="section-rule" />
+
+        {/* 05 — Education */}
+        <CinematicSection>
+          <Education />
         </CinematicSection>
 
         <div className="section-rule" />

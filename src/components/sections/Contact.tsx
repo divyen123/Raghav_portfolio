@@ -135,7 +135,7 @@ export default function Contact() {
           transition={{ duration: 0.5 }}
           className="text-aerospace-neon font-mono text-xs tracking-[0.45em] uppercase mb-5"
         >
-          05 — Contact
+          06 — Contact
         </motion.p>
 
         <motion.h2
