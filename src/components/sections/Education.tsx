@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import { GraduationCap, Award, X, Eye, FileBadge } from "lucide-react";
 
 const educationDetails = [
@@ -198,26 +198,42 @@ export default function Education() {
       </div>
 
       {/* Floating full-screen viewer (Modal using React Portal to bypass CSS transforms) */}
-      {selectedCert && mounted && createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 animate-fade-in">
-          <div className="relative max-w-4xl w-full max-h-[85vh] flex flex-col items-center justify-center">
-            {/* Wrong (Close) Icon button */}
-            <button
-              onClick={() => setSelectedCert(null)}
-              className="absolute -top-14 right-2 md:-right-12 w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:text-red-500 hover:bg-white/20 transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.1)] z-[10000]"
-              aria-label="Close certificate"
+      {mounted && createPortal(
+        <AnimatePresence>
+          {selectedCert && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-md p-4"
             >
-              <X size={20} />
-            </button>
-            <div className="relative w-full h-[75vh] flex items-center justify-center rounded-lg overflow-hidden border border-white/10 shadow-2xl bg-black/50">
-              <img
-                src={`/certifications/${encodeURIComponent(selectedCert)}`}
-                alt="Certificate Viewer"
-                className="max-w-full max-h-full object-contain"
-              />
-            </div>
-          </div>
-        </div>,
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0, y: 15 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.95, opacity: 0, y: 15 }}
+                transition={{ type: "spring", damping: 25, stiffness: 350 }}
+                className="relative max-w-4xl w-full max-h-[85vh] flex flex-col items-center justify-center"
+              >
+                {/* Wrong (Close) Icon button */}
+                <button
+                  onClick={() => setSelectedCert(null)}
+                  className="absolute -top-14 right-2 md:-right-12 w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:text-red-500 hover:bg-white/20 transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.1)] z-[10000]"
+                  aria-label="Close certificate"
+                >
+                  <X size={20} />
+                </button>
+                <div className="relative w-full h-[75vh] flex items-center justify-center rounded-lg overflow-hidden border border-white/10 shadow-2xl bg-black/50">
+                  <img
+                    src={`/certifications/${encodeURIComponent(selectedCert)}`}
+                    alt="Certificate Viewer"
+                    className="max-w-full max-h-full object-contain"
+                  />
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>,
         document.body
       )}
     </section>
